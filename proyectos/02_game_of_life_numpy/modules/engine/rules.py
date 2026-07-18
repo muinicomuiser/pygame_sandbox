@@ -30,3 +30,13 @@ class GameRules:
             [0, 0, 0, 0, 1],
             ])
         return kernel
+    @staticmethod
+    def c_kernel():
+        kernel = np.array([
+            [1, 1, 1, 1, 1],
+            [0, 0, 1, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 1, 0, 0],
+            [0, 1, 0, 1, 0],
+            ])
+        return kernel

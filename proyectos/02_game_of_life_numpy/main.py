@@ -11,6 +11,7 @@ if __name__ == "__main__":
     kernel = GameRules.base_kernel()
     # kernel = GameRules.a_kernel()
     # kernel = GameRules.b_kernel()
+    # kernel = GameRules.c_kernel()
 
     engine = GameOfLifeEngineNumpy(grid, kernel, config.RAND_GENERATION_RANGE)    
     recorder = Recorder(config.FRAMERATE, config.RECORDINGS_DIR)

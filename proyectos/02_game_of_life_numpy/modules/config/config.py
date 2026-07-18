@@ -14,9 +14,9 @@ class COLORS(tuple, Enum):
 class Config:
     # Constantes de clase. Solo por convención. Mayúsculas para indicar que una propiedad es una constante.
     # Con frozen sí se vuelven inmutables
-    TILESIZE: int = 2
-    WIDTH: int = 600
-    HEIGHT: int = 900
+    TILESIZE: int = 4
+    WIDTH: int = 1440
+    HEIGHT: int = 720
 
     RAND_GENERATION_RANGE: float = 0.5
     FRAMERATE: int = 12

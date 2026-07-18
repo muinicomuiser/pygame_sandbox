@@ -50,7 +50,7 @@ class GameInterface:
                 self._draw_cells_and_grid_np_array_()
             else:
                 # self._draw_cells_np_array_()
-                self._draw_circular_cells_and_grid_np_array_()
+                self._draw_circular_cells()
             if self.show_metrics:
                 self._render_metrics()
             pygame.display.flip()
@@ -81,7 +81,7 @@ class GameInterface:
             y = (r * self.config.TILESIZE) + 1
             pygame.draw.rect(self.screen, self.config.TILE_COLOR, (x, y, self.config.TILESIZE - 2, self.config.TILESIZE - 2))
 
-    def _draw_circular_cells_and_grid_np_array_(self):
+    def _draw_circular_cells(self):
         rows, columns = np.nonzero(self.engine.get_cells_array())
         for r, c in zip(rows, columns):
             radio = self.config.TILESIZE // 2
