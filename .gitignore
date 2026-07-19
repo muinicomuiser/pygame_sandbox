@@ -11,4 +11,5 @@ venv
 *.pyc
 __pycache__
 
+capturas
 grabaciones
