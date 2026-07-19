@@ -16,14 +16,16 @@ class Game:
         self.playing = True
         pygame.display.set_caption("Space Invaders")
         self.fps = self.config.FPS
-        self.spaceship = Spaceship(self.config.WIDTH // 2, self.config.HEIGHT - 100, config.IMG_DIR)
         self.spaceship_group = pygame.sprite.Group()
         self.bullet_group = pygame.sprite.Group()
         self.time = 0
         self.recorder: Recorder = recorder
-        self.stars = np.zeros((100, 4))
+        self.stars = np.zeros((300, 4))
         self._create_stars()
-        self.stars_velocity = 4
+        # self.stars_velocity = 4
+
+        self.assets = self._init_assets()
+        self.spaceship = Spaceship(self.config.WIDTH // 2, self.config.HEIGHT - 100, self.assets, (self.config.WIDTH, self.config.HEIGHT))
 
     def run(self):
         self.spaceship_group.add(self.spaceship)
@@ -31,29 +33,35 @@ class Game:
             self.recorder.init_record(self.screen.get_size())
         while self.running:
             self.clock.tick(self.fps)
+            self.time += 1
             # Events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
             key = pygame.key.get_pressed()
-            if key[pygame.K_LEFT] and self.spaceship.rect.left - self.spaceship.speed > 0:
+            if key[pygame.K_LEFT]:
                 self.spaceship.move_left()
-            if key[pygame.K_RIGHT] and self.spaceship.rect.right + self.spaceship.speed < self.config.WIDTH:
+            if key[pygame.K_RIGHT]:
                 self.spaceship.move_right()
-            if key[pygame.K_UP] and self.spaceship.rect.top - self.spaceship.speed > 0:
+            if key[pygame.K_UP]:
                 self.spaceship.move_up()
-            if key[pygame.K_DOWN] and self.spaceship.rect.bottom + self.spaceship.speed < self.config.HEIGHT:
+            if key[pygame.K_DOWN]:
                 self.spaceship.move_down()
             if key[pygame.K_SPACE]:
-                new_bullet = self.spaceship.fire()
-                if new_bullet:
-                    self.bullet_group.add(new_bullet)
+                bullets = self.spaceship.fire()
+                if bullets:
+                    self.bullet_group.add(bullets)
+            if key[pygame.K_1]:
+                self.spaceship.set_weapon(1)
+            if key[pygame.K_2]:
+                self.spaceship.set_weapon(2)
 
             # Update
             self.bullet_group.update()
             # Draw
 
             self.screen.fill((0, 0, 0))
+            self._draw_stars()
 
             self.spaceship_group.draw(self.screen)
             self.bullet_group.draw(self.screen)
@@ -61,9 +69,8 @@ class Game:
 
             bar_rect, bar_color = self.spaceship.get_health_bar()
             pygame.draw.rect(self.screen, rect=bar_rect, color=bar_color)
-            self.time += 1
-            self._draw_stars()
             pygame.display.update()
+            
             if self.recorder:
                 self.recorder.record_frame(self._image_frame())
         if self.recorder:
@@ -78,24 +85,28 @@ class Game:
 
     def _draw_stars(self):
         for star in self.stars:
-            # star[1] += star[2]
             if star[1] > self.config.HEIGHT:
                 star[1] = 0
                 star[0] = random.randint(0, self.config.WIDTH)
-            if star[3] > 80 or star[3] < 20:
+            if star[3] > 120 or star[3] < 20:
                 star[2] *= -1
             star[3] += star[2]
             
             val = star[3]
             color = (val, val, val)
 
-            pygame.draw.circle(self.screen, color, (star[0], star[1]), 1)
+            # pygame.draw.circle(self.screen, color, (star[0], star[1]), 1)
+            pygame.draw.rect(self.screen, color, (star[0], star[1], 1, 1))
 
     def _create_stars(self):
         for star in self.stars:
             star[0] = random.randint(0, self.config.WIDTH)
             star[1] = random.randint(0, self.config.HEIGHT)
-            # star[2] = random.randint(18, 20) / 3 # Velocidad
-            # star[2] = random.randint(24, 26) / 3 # Velocidad
-            star[2] = random.randint(3, 5) # Velocidad
-            star[3] = random.randint(20, 80) # Brillo
+            star[2] = random.randint(3, 6) # Pasos de variación de brillo
+            star[3] = random.randint(20, 120) # Brillo inicial
+
+    def _init_assets(self):
+        assets = {}
+        for name, file_name in self.config.ASSETS_LIST:
+            assets[name] = pygame.image.load(self.config.IMG_DIR / file_name).convert_alpha() 
+        return assets

@@ -4,7 +4,8 @@ import logging
 from modules.game import Game
 from modules.config import load_config
 from modules.recorder.recorder import Recorder
-if __name__ == "__main__":
+
+def main():
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
     parser = argparse.ArgumentParser(
@@ -26,3 +27,6 @@ if __name__ == "__main__":
     game = Game(config, recorder) # Graba solo si recorder es distinto a None
 
     game.run()
+
+if __name__ == "__main__":
+    main()

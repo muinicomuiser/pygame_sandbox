@@ -22,7 +22,7 @@ class SCREEN_SIZES(tuple, Enum):
     """Proporción: 3:4"""
 
     SQUARE_1080 = (1080, 1080)
-    SQUARE_720 = (1080, 1080)
+    SQUARE_720 = (720, 720)
     
     SD = (640, 480)  # 4:3
     """Proporción: 4:3"""
@@ -61,17 +61,20 @@ class SCREEN_SIZES(tuple, Enum):
     """Proporción: 3:4"""
 
 
-    
 class Config:
-    WIDTH, HEIGHT = SCREEN_SIZES.QHD_VERT
-    FPS: int = 30
-    BACKGROUND_COLOR: tuple = COLORS.NEGRO
-    GRID_COLOR: tuple = COLORS.NEGRO
-    FONT_COLOR: tuple = COLORS.CIAN
-    FONT_SIZE: int = 12    
-    PROJECT_ROOT = Path(sys.argv[0]).resolve().parent
-    IMG_DIR = PROJECT_ROOT / "img"
-    CAPTURAS_DIR = PROJECT_ROOT / "capturas"
+        WIDTH, HEIGHT = SCREEN_SIZES.SVGA_VERT
+        FPS: int = 30
+        BACKGROUND_COLOR: tuple = COLORS.NEGRO
+        GRID_COLOR: tuple = COLORS.NEGRO
+        FONT_COLOR: tuple = COLORS.CIAN
+        FONT_SIZE: int = 12    
+        PROJECT_ROOT = Path(sys.argv[0]).resolve().parent
+        IMG_DIR = PROJECT_ROOT / "img"
+        CAPTURAS_DIR = PROJECT_ROOT / "capturas"
+        ASSETS_LIST = {
+            ("spaceship_base", "nave v3.png"),
+            ("bullet_base", "bullet.png"),
+        }
 
 def load_config(args=None):
     config = Config()
