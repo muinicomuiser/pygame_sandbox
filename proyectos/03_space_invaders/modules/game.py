@@ -6,8 +6,9 @@ from modules.recorder.recorder import Recorder
 from modules.spaceship import Spaceship
 from modules.config import Config
 
+
 class Game:
-    def __init__(self, config: Config, recorder = None):
+    def __init__(self, config: Config, recorder=None):
         pygame.init()
         self.config = config
         self.screen = pygame.display.set_mode((self.config.WIDTH, self.config.HEIGHT))
@@ -25,7 +26,12 @@ class Game:
         # self.stars_velocity = 4
 
         self.assets = self._init_assets()
-        self.spaceship = Spaceship(self.config.WIDTH // 2, self.config.HEIGHT - 100, self.assets, (self.config.WIDTH, self.config.HEIGHT))
+        self.spaceship = Spaceship(
+            self.config.WIDTH // 2,
+            self.config.HEIGHT - 100,
+            self.assets,
+            (self.config.WIDTH, self.config.HEIGHT),
+        )
 
     def run(self):
         self.spaceship_group.add(self.spaceship)
@@ -66,11 +72,10 @@ class Game:
             self.spaceship_group.draw(self.screen)
             self.bullet_group.draw(self.screen)
 
-
             bar_rect, bar_color = self.spaceship.get_health_bar()
             pygame.draw.rect(self.screen, rect=bar_rect, color=bar_color)
             pygame.display.update()
-            
+
             if self.recorder:
                 self.recorder.record_frame(self._image_frame())
         if self.recorder:
@@ -91,7 +96,7 @@ class Game:
             if star[3] > 120 or star[3] < 20:
                 star[2] *= -1
             star[3] += star[2]
-            
+
             val = star[3]
             color = (val, val, val)
 
@@ -102,11 +107,13 @@ class Game:
         for star in self.stars:
             star[0] = random.randint(0, self.config.WIDTH)
             star[1] = random.randint(0, self.config.HEIGHT)
-            star[2] = random.randint(3, 6) # Pasos de variación de brillo
-            star[3] = random.randint(20, 120) # Brillo inicial
+            star[2] = random.randint(3, 6)  # Pasos de variación de brillo
+            star[3] = random.randint(20, 120)  # Brillo inicial
 
     def _init_assets(self):
         assets = {}
         for name, file_name in self.config.ASSETS_LIST:
-            assets[name] = pygame.image.load(self.config.IMG_DIR / file_name).convert_alpha() 
+            assets[name] = pygame.image.load(
+                self.config.IMG_DIR / file_name
+            ).convert_alpha()
         return assets

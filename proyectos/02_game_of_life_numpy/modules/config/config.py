@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
+
+
 class COLORS(tuple, Enum):
     AMARILLO = (255, 255, 0)
     BLANCO = (255, 255, 255)
@@ -9,6 +11,8 @@ class COLORS(tuple, Enum):
     PLOMO = (90, 90, 90)
     GRIS = (170, 170, 170)
     CREMA = (240, 240, 120)
+
+
 # Dataclass para configuraciones de una clase
 @dataclass(frozen=True)
 class Config:
@@ -37,6 +41,7 @@ class Config:
     @property
     def ROWS(self) -> int:
         return self.HEIGHT // self.TILESIZE
+
 
 def load_config() -> Config:
     return Config()
