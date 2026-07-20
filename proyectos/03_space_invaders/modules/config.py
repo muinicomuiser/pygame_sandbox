@@ -63,6 +63,7 @@ class SCREEN_SIZES(tuple, Enum):
 
 
 class Config:
+    # WIDTH, HEIGHT = SCREEN_SIZES.QHD_VERT
     WIDTH, HEIGHT = SCREEN_SIZES.SVGA_VERT
     FPS: int = 30
     BACKGROUND_COLOR: tuple = COLORS.NEGRO
@@ -74,9 +75,11 @@ class Config:
     CAPTURAS_DIR = PROJECT_ROOT / "capturas"
     ASSETS_LIST = {
         ("spaceship_base", "nave v3.png"),
+        ("alien_base", "alien.png"),
         ("bullet_base", "bullet.png"),
+        ("alien_bullet", "alien_bullet.png"),
     }
-
+    ALIENS_ROWS, ALIENS_COLS = 5, 5
 
 def load_config(args=None):
     config = Config()

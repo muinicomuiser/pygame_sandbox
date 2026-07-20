@@ -2,6 +2,8 @@ import random
 import sys
 import numpy as np
 import pygame
+from modules.enemy import Enemy
+from modules.projectile import AlienBullet
 from modules.recorder.recorder import Recorder
 from modules.spaceship import Spaceship
 from modules.config import Config
@@ -17,8 +19,12 @@ class Game:
         self.playing = True
         pygame.display.set_caption("Space Invaders")
         self.fps = self.config.FPS
+
         self.spaceship_group = pygame.sprite.Group()
         self.bullet_group = pygame.sprite.Group()
+        self.alien_bullet_group = pygame.sprite.Group()
+        self.enemies_group = pygame.sprite.Group()
+
         self.time = 0
         self.recorder: Recorder = recorder
         self.stars = np.zeros((300, 4))
@@ -33,8 +39,12 @@ class Game:
             (self.config.WIDTH, self.config.HEIGHT),
         )
 
+        self.aliens = self.create_aliens()
+        self.last_alien_shot = 0
+
     def run(self):
         self.spaceship_group.add(self.spaceship)
+        self.enemies_group.add(self.aliens)
         if self.recorder:
             self.recorder.init_record(self.screen.get_size())
         while self.running:
@@ -63,16 +73,33 @@ class Game:
                 self.spaceship.set_weapon(2)
 
             # Update
-            self.bullet_group.update()
+            
+            alien_cooldown = 500
+            time_now = pygame.time.get_ticks()
+            if time_now - self.last_alien_shot > alien_cooldown and len(self.enemies_group) > 0:
+                attacking_alien = random.choice(self.enemies_group.sprites())
+                alien_bullet = AlienBullet(attacking_alien.rect.centerx, attacking_alien.rect.bottom, self.assets["alien_bullet"], self.config.WIDTH, self.config.HEIGHT)
+                self.alien_bullet_group.add(alien_bullet)
+                self.last_alien_shot = time_now
+            
+            self.bullet_group.update(self.enemies_group)
+            self.enemies_group.update()
+            self.alien_bullet_group.update()
+            self.spaceship_group.update(self.alien_bullet_group)
+
+
             # Draw
 
             self.screen.fill((0, 0, 0))
             self._draw_stars()
 
             self.spaceship_group.draw(self.screen)
+            self.enemies_group.draw(self.screen)
             self.bullet_group.draw(self.screen)
+            self.alien_bullet_group.draw(self.screen)
 
-            bar_rect, bar_color = self.spaceship.get_health_bar()
+            damage_bar_rect, damage_bar_color, bar_rect, bar_color = self.spaceship.get_health_bar()
+            pygame.draw.rect(self.screen, rect=damage_bar_rect, color=damage_bar_color)
             pygame.draw.rect(self.screen, rect=bar_rect, color=bar_color)
             pygame.display.update()
 
@@ -107,7 +134,7 @@ class Game:
         for star in self.stars:
             star[0] = random.randint(0, self.config.WIDTH)
             star[1] = random.randint(0, self.config.HEIGHT)
-            star[2] = random.randint(3, 6)  # Pasos de variación de brillo
+            star[2] = random.randint(4, 8)  # Pasos de variación de brillo
             star[3] = random.randint(20, 120)  # Brillo inicial
 
     def _init_assets(self):
@@ -117,3 +144,15 @@ class Game:
                 self.config.IMG_DIR / file_name
             ).convert_alpha()
         return assets
+
+    def create_aliens(self):
+        cols, rows = self.config.ALIENS_COLS, self.config.ALIENS_ROWS
+        horizontal_space = self.config.WIDTH // 6
+        vertical_space = 50
+        aliens = set()
+        for row in range(rows):
+            for item in range(cols):
+                alien = Enemy(horizontal_space + item * horizontal_space, 100 + row * vertical_space, self.assets,
+            (self.config.WIDTH, self.config.HEIGHT), horizontal_space)
+                aliens.add(alien)
+        return aliens
