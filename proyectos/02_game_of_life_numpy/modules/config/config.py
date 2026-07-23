@@ -18,12 +18,13 @@ class COLORS(tuple, Enum):
 class Config:
     # Constantes de clase. Solo por convención. Mayúsculas para indicar que una propiedad es una constante.
     # Con frozen sí se vuelven inmutables
-    TILESIZE: int = 4
-    WIDTH: int = 1440
-    HEIGHT: int = 720
+    TILESIZE: int = 2
+    WIDTH: int = 1920
+    HEIGHT: int = 1080
 
-    RAND_GENERATION_RANGE: float = 0.5
-    FRAMERATE: int = 12
+    RAND_GENERATION_RANGE: float = 0.4
+    FRAMERATE: int = 2
+    RECORD_FPS: int = 60
 
     BACKGROUND_COLOR: tuple = COLORS.NEGRO
     TILE_COLOR: tuple = COLORS.GRIS
@@ -31,7 +32,7 @@ class Config:
     FONT_COLOR: tuple = (200, 200, 255)
     FONT_SIZE: int = 12
 
-    RECORDINGS_DIR = "grabaciones"
+    RECORDINGS_DIR = "capturas"
 
     # Convierte una función en una propiedad. Para setters, getters y deleters
     @property

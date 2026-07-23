@@ -1,18 +1,18 @@
 import numpy as np
 
 from modules.engine.grid import BaseGrid
-from modules.engine.rules import GameRules
 
 from abc import ABC, abstractmethod
 
 
 class BaseEngine(ABC):
-    def __init__(self, grid, kernel, random_range=0.1):
+    def __init__(self, grid, kernel, random_range=0.1, rule=((3, 3), (2, 3))):
         self.grid: BaseGrid = grid
         self.random_range = random_range
         self.random_generator = np.random.default_rng()
         self.random_positions()
         self.kernel = kernel
+        self.rule = rule
 
     @abstractmethod
     def random_positions(self):
@@ -52,7 +52,7 @@ class GameOfLifeEngineNumpy(BaseEngine):
         self.grid.toggle_cell(position)
 
     def next_step(self):
-        self.grid.update(self.kernel, rule_update_function)
+        self.grid.update(self.kernel, self.rule, rule_update_function)
 
     def clear(self):
         self.grid.clear()
@@ -64,5 +64,8 @@ class GameOfLifeEngineNumpy(BaseEngine):
         return np.count_nonzero(self.get_cells_array())
 
 
-def rule_update_function(array, neighbors):
-    return ((neighbors == 3) | (array & (neighbors == 2))).astype(np.uint8)
+def rule_update_function(array, neighbors, rule: tuple):
+    birth_rule, stable_rule = rule
+    birth_min, birth_max = birth_rule
+    stable_min, stable_max = stable_rule
+    return (((neighbors >= birth_min) & (neighbors <= birth_max)) | (array & ((neighbors >= stable_min) & (neighbors <= stable_max)))).astype(np.uint8)

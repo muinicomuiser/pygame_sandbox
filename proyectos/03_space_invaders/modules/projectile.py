@@ -12,7 +12,7 @@ class Bullet(pygame.sprite.Sprite):
         self.limit_y = limit_y
         self.limit_x = limit_x
 
-    def update(self, alien_group: pygame.sprite.Group):
+    def update(self):
         if self.velocity_x != 0:
             new_x = self.rect.x + self.velocity_x
             if new_x < 0 or new_x > self.limit_x:
@@ -22,8 +22,8 @@ class Bullet(pygame.sprite.Sprite):
         if new_y < self.limit_y:
             self.kill()
         self.rect.y = new_y
-        if pygame.sprite.spritecollide(self, alien_group, True):
-            self.kill()
+        # if pygame.sprite.spritecollide(self, alien_group, True):
+        #     self.kill()
 
     @staticmethod
     def base_bullet(x, y, image):

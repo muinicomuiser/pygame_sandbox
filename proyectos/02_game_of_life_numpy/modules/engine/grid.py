@@ -40,9 +40,9 @@ class InfiniteGrid(BaseGrid):
         neighbors = convolve2d(self._cells_array, kernel, mode="same", boundary="wrap")
         return neighbors
 
-    def update(self, kernel, update_function):
+    def update(self, kernel, rule, update_function):
         neighbors = self.get_neighbors(kernel)
-        self._cells_array = update_function(self._cells_array, neighbors)
+        self._cells_array = update_function(self._cells_array, neighbors, rule)
 
     def get_alive_array(self):
         return self._cells_array

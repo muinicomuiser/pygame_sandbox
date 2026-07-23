@@ -1,8 +1,10 @@
+from operator import attrgetter
 import random
 import sys
 import numpy as np
 import pygame
 from modules.enemy import Enemy
+from modules.explosion import Explosion
 from modules.projectile import AlienBullet
 from modules.recorder.recorder import Recorder
 from modules.spaceship import Spaceship
@@ -24,6 +26,7 @@ class Game:
         self.bullet_group = pygame.sprite.Group()
         self.alien_bullet_group = pygame.sprite.Group()
         self.enemies_group = pygame.sprite.Group()
+        self.explosions_group = pygame.sprite.Group()
 
         self.time = 0
         self.recorder: Recorder = recorder
@@ -81,11 +84,17 @@ class Game:
                 alien_bullet = AlienBullet(attacking_alien.rect.centerx, attacking_alien.rect.bottom, self.assets["alien_bullet"], self.config.WIDTH, self.config.HEIGHT)
                 self.alien_bullet_group.add(alien_bullet)
                 self.last_alien_shot = time_now
+
+            # enemigo_derecha = self.enemies_group.
             
-            self.bullet_group.update(self.enemies_group)
-            self.enemies_group.update()
+            self.bullet_group.update()
+            if self.enemies_group.sprites() and (self.enemies_group.sprites()[0].rect.left <= 0 or self.enemies_group.sprites()[-1].rect.right >= self.config.WIDTH):
+                self.enemies_group.update(self.bullet_group, self.explosions_group, True)
+            else:
+                self.enemies_group.update(self.bullet_group, self.explosions_group, False)
             self.alien_bullet_group.update()
             self.spaceship_group.update(self.alien_bullet_group)
+            self.explosions_group.update()
 
 
             # Draw
@@ -97,6 +106,7 @@ class Game:
             self.enemies_group.draw(self.screen)
             self.bullet_group.draw(self.screen)
             self.alien_bullet_group.draw(self.screen)
+            self.explosions_group.draw(self.screen)
 
             damage_bar_rect, damage_bar_color, bar_rect, bar_color = self.spaceship.get_health_bar()
             pygame.draw.rect(self.screen, rect=damage_bar_rect, color=damage_bar_color)
@@ -150,9 +160,10 @@ class Game:
         horizontal_space = self.config.WIDTH // 6
         vertical_space = 50
         aliens = set()
-        for row in range(rows):
-            for item in range(cols):
-                alien = Enemy(horizontal_space + item * horizontal_space, 100 + row * vertical_space, self.assets,
+        for col in range(cols):
+            for item in range(rows):
+                alien = Enemy(horizontal_space + col * horizontal_space, 100 + item * vertical_space, self.assets,
             (self.config.WIDTH, self.config.HEIGHT), horizontal_space)
                 aliens.add(alien)
-        return aliens
+        aliens_en_orden = (sorted(aliens, key=attrgetter('rect.centerx')))
+        return aliens_en_orden

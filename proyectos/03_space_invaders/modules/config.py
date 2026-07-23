@@ -78,8 +78,14 @@ class Config:
         ("alien_base", "alien.png"),
         ("bullet_base", "bullet.png"),
         ("alien_bullet", "alien_bullet.png"),
+
+        ("explosion_1", "explosion_1.png"),
+        ("explosion_2", "explosion_2.png"),
+        ("explosion_3", "explosion_3.png"),
+        ("explosion_4", "explosion_4.png"),
+        ("explosion_5", "explosion_5.png"),
     }
-    ALIENS_ROWS, ALIENS_COLS = 5, 5
+    ALIENS_ROWS, ALIENS_COLS = 5, 4
 
 def load_config(args=None):
     config = Config()
